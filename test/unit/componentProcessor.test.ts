@@ -53,7 +53,7 @@ describe('ComponentProcessor', () => {
       const result = SourceComponentProcessor.getComponentsToSkip(source, ['ApexClass:MyClass'], undefined);
       expect(result.size).to.be.greaterThan(0);
       const skipEntries = Array.from(result);
-      expect(skipEntries.some((r) => r.componentName === 'MyClass' && r.typeName === 'ApexClass')).to.be.true;
+      expect(skipEntries.some((r) => r.componentName === 'MyClass' && r.componentType.name === 'ApexClass')).to.be.true;
     });
 
     it('should include LWC without xml in skip set', () => {

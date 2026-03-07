@@ -18,7 +18,7 @@ import { MultiStageOutput } from '@oclif/multi-stage-output';
 import { Messages, SfProject } from '@salesforce/core';
 import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import { ComponentSetBuilder } from '@salesforce/source-deploy-retrieve';
-import { SourceComponentProcessor, EnrichmentHandler, EnrichmentMetrics, EnrichmentRecords, EnrichmentStatus, FileProcessor } from '@salesforce/metadata-enrichment';
+import { SourceComponentProcessor, EnrichmentHandler, EnrichmentMetrics, EnrichmentRecords, FileProcessor } from '@salesforce/metadata-enrichment';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const commandMessages = Messages.loadMessages('@salesforce/plugin-metadata-enrichment', 'metadata.enrich');
@@ -74,9 +74,7 @@ export default class MetadataEnrich extends SfCommand<EnrichmentMetrics> {
       metadataEntries,
       project.getPath()
     );
-    enrichmentRecords.addSkippedComponents(componentsToSkip);
-    enrichmentRecords.updateWithStatus(componentsToSkip, EnrichmentStatus.SKIPPED);
-    enrichmentRecords.generateSkipReasons(componentsToSkip, projectSourceComponents);
+    enrichmentRecords.addRecords(componentsToSkip);
 
     const componentsEligibleToProcess = projectSourceComponents.filter((component) => {
       const componentName = component.fullName ?? component.name;
