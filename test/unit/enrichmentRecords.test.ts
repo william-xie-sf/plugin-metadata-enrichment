@@ -48,7 +48,6 @@ describe('EnrichmentRecords', () => {
       expect(record.requestBody).to.not.be.null;
       expect(record.requestBody!.contentBundles).to.deep.equal([]);
       expect(record.requestBody!.metadataType).to.equal('Generic');
-      expect(record.requestBody!.maxTokens).to.equal(50);
     });
 
     it('should not create record when component has no name', () => {
@@ -64,10 +63,17 @@ describe('EnrichmentRecords', () => {
     });
   });
 
-  describe('addSkippedComponents', () => {
+  describe('addRecords', () => {
     it('should add SKIPPED record for component not in recordSet', () => {
       const records = new EnrichmentRecords([]);
-      records.addSkippedComponents(new Set([{ typeName: 'LightningComponentBundle', componentName: 'SkippedCmp' }]));
+      records.addRecords(new Set([{
+        componentName: 'SkippedCmp',
+        componentType: { name: 'LightningComponentBundle' } as SourceComponent['type'],
+        requestBody: { contentBundles: [], metadataType: 'Generic' },
+        response: null,
+        message: null,
+        status: EnrichmentStatus.SKIPPED,
+      }]));
       expect(records.recordSet.size).to.equal(1);
       const record = Array.from(records.recordSet)[0];
       expect(record.componentName).to.equal('SkippedCmp');
@@ -75,13 +81,19 @@ describe('EnrichmentRecords', () => {
       expect(record.requestBody).to.not.be.null;
       expect(record.requestBody!.contentBundles).to.deep.equal([]);
       expect(record.requestBody!.metadataType).to.equal('Generic');
-      expect(record.requestBody!.maxTokens).to.equal(50);
     });
 
     it('should not duplicate when record already exists', () => {
       const source = [createSourceComponent('Existing', 'LightningComponentBundle')];
       const records = new EnrichmentRecords(source);
-      records.addSkippedComponents(new Set([{ typeName: 'LightningComponentBundle', componentName: 'Existing' }]));
+      records.addRecords(new Set([{
+        componentName: 'Existing',
+        componentType: { name: 'LightningComponentBundle' } as SourceComponent['type'],
+        requestBody: { contentBundles: [], metadataType: 'Generic' },
+        response: null,
+        message: null,
+        status: EnrichmentStatus.SKIPPED,
+      }]));
       expect(records.recordSet.size).to.equal(1);
     });
   });
@@ -189,39 +201,4 @@ describe('EnrichmentRecords', () => {
     });
   });
 
-  describe('generateSkipReasons', () => {
-    it('should set message for skipped record when component not in source', () => {
-      const records = new EnrichmentRecords([]);
-      records.addSkippedComponents(new Set([{ typeName: 'LightningComponentBundle', componentName: 'Missing' }]));
-      records.generateSkipReasons(new Set([{ typeName: 'LightningComponentBundle', componentName: 'Missing' }]), []);
-      const record = Array.from(records.recordSet)[0];
-      expect(record.message).to.equal('Component not found in project.');
-    });
-
-    it('should set LWC-only message for skipped non-LWC component', () => {
-      const source = [createSourceComponent('MyClass', 'ApexClass')];
-      const records = new EnrichmentRecords(source);
-      records.addSkippedComponents(new Set([{ typeName: 'ApexClass', componentName: 'MyClass' }]));
-      records.updateWithStatus(
-        new Set([{ typeName: 'ApexClass', componentName: 'MyClass' }]),
-        EnrichmentStatus.SKIPPED
-      );
-      records.generateSkipReasons(new Set([{ typeName: 'ApexClass', componentName: 'MyClass' }]), source);
-      const record = Array.from(records.recordSet)[0];
-      expect(record.message).to.equal('Component type \'ApexClass\' is not currently supported for enrichment.');
-    });
-
-    it('should set lwc.configuration.not.found for LWC without xml', () => {
-      const source = [createSourceComponent('NoMeta', 'LightningComponentBundle')];
-      const records = new EnrichmentRecords(source);
-      records.addSkippedComponents(new Set([{ typeName: 'LightningComponentBundle', componentName: 'NoMeta' }]));
-      records.updateWithStatus(
-        new Set([{ typeName: 'LightningComponentBundle', componentName: 'NoMeta' }]),
-        EnrichmentStatus.SKIPPED
-      );
-      records.generateSkipReasons(new Set([{ typeName: 'LightningComponentBundle', componentName: 'NoMeta' }]), source);
-      const record = Array.from(records.recordSet)[0];
-      expect(record.message).to.equal('The component\'s metadata configuration file doesn\'t exist.');
-    });
-  });
 });

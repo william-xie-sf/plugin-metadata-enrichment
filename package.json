@@ -8,9 +8,9 @@
     "@oclif/core": "^4",
     "@oclif/multi-stage-output": "^0.8.30",
     "@oclif/table": "^0.5.1",
-    "@salesforce/core": "^8.24.0",
+    "@salesforce/core": "^8.26.3",
     "@salesforce/kit": "^3.2.4",
-    "@salesforce/metadata-enrichment": "^0.0.6",
+    "@salesforce/metadata-enrichment": "^0.0.8",
     "@salesforce/sf-plugins-core": "^12",
     "@salesforce/source-deploy-retrieve": "^12.0.1"
   },
@@ -23,7 +23,7 @@
     "eslint-plugin-sf-plugin": "^1.20.33",
     "oclif": "^4.22.59",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.9.2"
   },
   "engines": {
     "node": ">=20.0.0"
