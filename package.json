@@ -82,6 +82,14 @@
     "test:only": "wireit",
     "version": "oclif readme"
   },
+  "overrides": {
+    "@salesforce/core": "8.27.0",
+    "@salesforce/source-deploy-retrieve": "12.31.21"
+  },
+  "resolutions": {
+    "@salesforce/core": "8.27.0",
+    "@salesforce/source-deploy-retrieve": "12.31.21"
+  },
   "publishConfig": {
     "access": "public"
   },
